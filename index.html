@@ -13,9 +13,8 @@
 </head>
 <body>
   <h1>Number Incrementer Game</h1>
-  <p>Click the button to increase the number:</p>
+  <p>The number increases automatically every second:</p>
   <p id="number">0</p>
-  <button onclick="incrementNumber()">Increment</button>
 
   <script>
     var number = 0;
@@ -24,6 +23,8 @@
       number++;
       document.getElementById('number').innerText = number;
     }
+
+    setInterval(incrementNumber, 1000); // Increment the number every 1000 milliseconds (1 second)
   </script>
 </body>
 </html>
