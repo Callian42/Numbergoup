@@ -17,13 +17,20 @@
   <p id="number">0</p>
 
   <script>
-    var number = 0;
+    // Retrieve the last saved number from localStorage
+    var lastNumber = localStorage.getItem('number');
+    var number = lastNumber ? parseInt(lastNumber) : 0; // Use the last saved number or default to 0
 
     function incrementNumber() {
       number++;
       document.getElementById('number').innerText = number;
+
+      // Save the current number to localStorage
+      localStorage.setItem('number', number);
     }
 
+    // Call incrementNumber initially to display the last saved number
+    incrementNumber();
     setInterval(incrementNumber, 1000); // Increment the number every 1000 milliseconds (1 second)
   </script>
 </body>
