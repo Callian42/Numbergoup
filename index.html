@@ -47,6 +47,8 @@
       <p>Money: <span id="moneyValue">0</span></p>
     </div>
 
+    <p id="swipeCount">Total Spent on Swipes: $0</p>
+
     <button class="jobButton" id="lowIncomeJob">Low Income Job<br/>(1 money per second and 2x and multi to number go up)</button>
     <button class="jobButton" id="highIncomeJob">High Income Job<br/>(2 money per second and 1x multi to number go up)</button>
   </div>
@@ -66,10 +68,13 @@
     let speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
     let money = lastMoney ? parseInt(lastMoney) : 0;
     let lastFrameTime = Date.now();
+    let lastSwipeCount = localStorage.getItem('swipeCount');
+    let swipeCount = lastSwipeCount ? parseInt(lastSwipeCount) : (speed - 1) * 5;
 
     function updateUI() {
       document.getElementById('number').innerText = number.toLocaleString('en-US', { maximumFractionDigits: 0 });
       document.getElementById('moneyValue').innerText = Math.floor(money).toLocaleString('en-US');
+      document.getElementById('swipeCount').innerText = 'Total Spent on Swipes: $' + swipeCount;
     }
 
     // Define job parameters
@@ -83,6 +88,7 @@
       localStorage.setItem('number', number);
       localStorage.setItem('money', money);
       localStorage.setItem('speedUpgrades', speed);
+      localStorage.setItem('swipeCount', swipeCount);
     }
 
     function incrementNumber() {
@@ -95,6 +101,7 @@
       if (money >= 5) {
         speed++;
         money -= 5;
+        swipeCount += 5;
         updateUI();
         saveState();
       } else {
@@ -102,15 +109,15 @@
       }
     }
 
-  function updateMoney() {
-    const now = Date.now();
-    const deltaTime = (now - lastFrameTime) / 1000; // Time elapsed since last frame in seconds
-    lastFrameTime = now;
+    function updateMoney() {
+      const now = Date.now();
+      const deltaTime = (now - lastFrameTime) / 1000; // Time elapsed since last frame in seconds
+      lastFrameTime = now;
 
-    money += jobs[currentJob].incomeRate * deltaTime;
-    updateUI();
-    saveState();
-}
+      money += jobs[currentJob].incomeRate * deltaTime;
+      updateUI();
+      saveState();
+    }
 
     function changeJob(job) {
       currentJob = job;
@@ -146,6 +153,7 @@
       speed = 1;
       money = 0;
       currentJob = 'low';
+      swipeCount = 0;
       updateUI();
     });
 
