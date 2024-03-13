@@ -193,18 +193,27 @@
       }
     }
 
-  function buyGems(amount) {
-    const cost = amount / 10; // Define the cost for each amount of gems. Adjust this as needed.
+    const gemCosts = {
+      50: 4.99,
+      120: 9.99,
+      250: 19.99,
+      650: 49.99,
+      1400: 99.99,
+      3000: 199.99
+    };
 
-    if (money >= cost) {
-      money -= cost;
-      gems += amount;
-      updateUI();
-      saveState();
-    } else {
-      // Show error message in the UI
+    function buyGems(amount) {
+      const cost = gemCosts[amount]; // Get the cost from the mapping
+
+      if (money >= cost) {
+        money -= cost;
+        gems += amount;
+        updateUI();
+        saveState();
+      } else {
+        // Show error message in the UI
+      }
     }
-  }
 
     function updateMoney() {
       const now = Date.now();
