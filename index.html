@@ -48,8 +48,9 @@
     // Retrieve last saved values from localStorage
     var lastNumber = localStorage.getItem('number');
     var lastMoney = localStorage.getItem('money');
+    var lastSpeedUpgrades = localStorage.getItem('speedUpgrades');
     var number = lastNumber ? parseInt(lastNumber) : 0;
-    var speed = 1; // Default speed
+    var speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
     var money = lastMoney ? parseInt(lastMoney) : 0;
 
     function incrementNumber() {
@@ -64,6 +65,7 @@
         money -= 5;
         document.getElementById('moneyValue').innerText = money;
         localStorage.setItem('money', money);
+        localStorage.setItem('speedUpgrades', speed);
       } else {
         alert("Not enough money to increase speed!");
       }
