@@ -33,6 +33,14 @@
     .jobButton {
       margin-top: 10px;
     }
+
+    .gemButton {
+      margin-top: 10px;
+    }
+
+    .speedUpButton {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -41,13 +49,31 @@
     <p>you like when number go up:</p>
     <p id="number">0</p>
 
-    <button id="speedButton">swipe credit card! (Costs $5)</button>
-
     <div id="money">
       <p>Money: <span id="moneyValue">0</span></p>
     </div>
 
-    <p id="swipeCount">Total Spent on Swipes: $0</p>
+    <div id="gems">
+      <p id="gemCount">Gems: <span id="gemValue">0</span></p>
+    </div>
+
+    <div id="swipe">
+      <p id="swipeCount">Total Spent on Numbergoingup: $0</p>
+    </div>
+
+    <button class="gemButton" id="buy50Gems">50 Gems<br/>(Costs $4.99)</button>
+    <button class="gemButton" id="buy120Gems">120 Gems<br/>(Costs $9.99)</button>
+    <button class="gemButton" id="buy250Gems">250 Gems<br/>(Costs $19.99)</button>
+    <button class="gemButton" id="buy650Gems">650 Gems<br/>(Costs $49.99)</button>
+    <button class="gemButton" id="buy1400Gems">1400 Gems<br/>(Costs $99.99)</button>
+    <button class="gemButton" id="buy3000Gems">3000 Gems<br/>(Costs $199.99)</button>
+
+    <button class="speedUpButton" id="speedUp1">Speed Up by 20%<br/>(Costs 50 Gems)</button>
+    <button class="speedUpButton" id="speedUp2">Speed Up by 50%<br/>(Costs 120 Gems)</button>
+    <button class="speedUpButton" id="speedUp3">Speed Up by 100%<br/>(Costs 250 Gems)</button>
+    <button class="speedUpButton" id="speedUp4">Speed Up by 300%<br/>(Costs 650 Gems)</button>
+    <button class="speedUpButton" id="speedUp5">Increase Speed by 500%<br/>(Costs 1400 Gems)</button>
+    <button class="speedUpButton" id="speedUp6">Increase Speed by 1000%<br/>(Costs 3000 Gems)</button>    
 
     <button class="jobButton" id="lowIncomeJob">Low Income Job<br/>(1 money per second and 2x and multi to number go up)</button>
     <button class="jobButton" id="highIncomeJob">High Income Job<br/>(2 money per second and 1x multi to number go up)</button>
@@ -64,9 +90,11 @@
     let lastNumber = localStorage.getItem('number');
     let lastMoney = localStorage.getItem('money');
     let lastSpeedUpgrades = localStorage.getItem('speedUpgrades');
+    let lastGems = localStorage.getItem('gems');
     let number = lastNumber ? parseFloat(lastNumber) : 10.00; // Default number with decimal points
     let speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
     let money = lastMoney ? parseInt(lastMoney) : 0;
+    let gems = lastGems ? parseInt(lastGems) : 0;
     let lastFrameTime = Date.now();
     let lastSwipeCount = localStorage.getItem('swipeCount');
     let swipeCount = lastSwipeCount ? parseInt(lastSwipeCount) : (speed - 1) * 5;
@@ -74,6 +102,7 @@
     function updateUI() {
       document.getElementById('number').innerText = number.toLocaleString('en-US', { maximumFractionDigits: 0 });
       document.getElementById('moneyValue').innerText = Math.floor(money).toLocaleString('en-US');
+      document.getElementById('gemValue').innerText = gems.toLocaleString('en-US'); // Add this line
       document.getElementById('swipeCount').innerText = 'Total Spent on Swipes: $' + swipeCount;
     }
 
@@ -89,6 +118,7 @@
       localStorage.setItem('money', money);
       localStorage.setItem('speedUpgrades', speed);
       localStorage.setItem('swipeCount', swipeCount);
+      localStorage.setItem('gems', gems);
     }
 
     function incrementNumber() {
@@ -97,17 +127,30 @@
       saveState();
     }
 
-    function increaseSpeed() {
-      if (money >= 5) {
-        speed++;
-        money -= 5;
-        swipeCount += 5;
-        updateUI();
-        saveState();
-      } else {
-        // Show error message in the UI
-      }
+  function speedUp(percentageIncrease, cost) {
+    if (gems >= cost) {
+      speed += speed * (percentageIncrease / 100); // Increase speed by a percentage of the current speed
+      gems -= cost;
+      swipeCount += cost; // Add the cost to the total spent on swipes
+      updateUI();
+      saveState();
+    } else {
+      // Show error message in the UI
     }
+  }
+
+  function buyGems(amount) {
+    const cost = amount / 10; // Define the cost for each amount of gems. Adjust this as needed.
+
+    if (money >= cost) {
+      money -= cost;
+      gems += amount;
+      updateUI();
+      saveState();
+    } else {
+      // Show error message in the UI
+    }
+  }
 
     function updateMoney() {
       const now = Date.now();
@@ -123,7 +166,18 @@
       currentJob = job;
     }
 
-    document.getElementById('speedButton').addEventListener('click', increaseSpeed);
+    document.getElementById('buy50Gems').addEventListener('click', () => buyGems(50));
+    document.getElementById('buy120Gems').addEventListener('click', () => buyGems(120));
+    document.getElementById('buy250Gems').addEventListener('click', () => buyGems(250));
+    document.getElementById('buy650Gems').addEventListener('click', () => buyGems(650));
+    document.getElementById('buy1400Gems').addEventListener('click', () => buyGems(1400));
+    document.getElementById('buy3000Gems').addEventListener('click', () => buyGems(3000));
+    document.getElementById('speedUp1').addEventListener('click', () => speedUp(20, 50));
+    document.getElementById('speedUp2').addEventListener('click', () => speedUp(50, 120));
+    document.getElementById('speedUp3').addEventListener('click', () => speedUp(100, 250));
+    document.getElementById('speedUp4').addEventListener('click', () => speedUp(300, 650));
+    document.getElementById('speedUp5').addEventListener('click', () => speedUp(500, 1400));
+    document.getElementById('speedUp6').addEventListener('click', () => speedUp(1000, 3000));
     document.getElementById('lowIncomeJob').addEventListener('click', () => changeJob('low'));
     document.getElementById('highIncomeJob').addEventListener('click', () => changeJob('high'));
 
@@ -154,6 +208,7 @@
       money = 0;
       currentJob = 'low';
       swipeCount = 0;
+      gems = 0;
       updateUI();
     });
 
