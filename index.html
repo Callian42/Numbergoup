@@ -29,6 +29,10 @@
     #money {
       margin-top: 20px;
     }
+
+    .jobButton {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
@@ -43,8 +47,8 @@
       <p>Money: <span id="moneyValue">0</span></p>
     </div>
 
-    <button onclick="changeJob('low')">Low Income Job</button>
-    <button onclick="changeJob('high')">High Income Job</button>
+    <button class="jobButton" onclick="changeJob('low')">Low Income Job<br/>(1 money per second and 2x and multi to number go up)</button>
+    <button class="jobButton" onclick="changeJob('high')">High Income Job<br/>(2 money per second and 1x multi to number go up)</button>
   </div>
 
   <script>
