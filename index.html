@@ -9,29 +9,73 @@
       font-family: Arial, sans-serif;
       text-align: center;
     }
+
+    #container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 50px;
+    }
+
+    #number {
+      font-size: 24px;
+    }
+
+    #speedMenu {
+      margin-top: 20px;
+    }
+
+    #currency {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>Number Incrementer Game</h1>
-  <p>The number increases automatically every second:</p>
-  <p id="number">0</p>
+  <div id="container">
+    <h1>Number Incrementer Game</h1>
+    <p>The number increases automatically every second:</p>
+    <p id="number">0</p>
+
+    <div id="speedMenu">
+      <label for="speedInput">Increase Speed:</label>
+      <input type="number" id="speedInput" value="1">
+      <button onclick="applySpeed()">Apply</button>
+    </div>
+
+    <div id="currency">
+      <p>Currency: <span id="currencyValue">0</span></p>
+    </div>
+  </div>
 
   <script>
-    // Retrieve the last saved number from localStorage
     var lastNumber = localStorage.getItem('number');
-    var number = lastNumber ? parseInt(lastNumber) : 0; // Use the last saved number or default to 0
+    var number = lastNumber ? parseInt(lastNumber) : 0;
+    var speed = 1; // Default speed
+
+    var currency = 0;
 
     function incrementNumber() {
-      number++;
+      number += speed;
       document.getElementById('number').innerText = number;
-
-      // Save the current number to localStorage
       localStorage.setItem('number', number);
     }
 
-    // Call incrementNumber initially to display the last saved number
+    function applySpeed() {
+      var newSpeed = parseInt(document.getElementById('speedInput').value);
+      if (!isNaN(newSpeed) && newSpeed > 0) {
+        speed = newSpeed;
+      }
+    }
+
+    function updateCurrency() {
+      currency += 2;
+      document.getElementById('currencyValue').innerText = currency;
+    }
+
     incrementNumber();
-    setInterval(incrementNumber, 1000); // Increment the number every 1000 milliseconds (1 second)
+    setInterval(incrementNumber, 1000);
+    setInterval(updateCurrency, 1000);
   </script>
 </body>
 </html>
