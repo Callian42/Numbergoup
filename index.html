@@ -185,7 +185,6 @@
       if (gems >= cost) {
         speed += percentageIncrease / 100; // Increase speed by a fixed amount
         gems -= cost;
-        swipeCount += cost; // Add the cost to the total spent on Numbergoingup
         updateUI();
         saveState();
       } else {
@@ -208,6 +207,7 @@
       if (money >= cost) {
         money -= cost;
         gems += amount;
+        swipeCount += cost; // Add the cost to the total spent on Numbergoingup
         updateUI();
         saveState();
       } else {
