@@ -103,7 +103,7 @@
       document.getElementById('number').innerText = number.toLocaleString('en-US', { maximumFractionDigits: 0 });
       document.getElementById('moneyValue').innerText = Math.floor(money).toLocaleString('en-US');
       document.getElementById('gemValue').innerText = gems.toLocaleString('en-US'); // Add this line
-      document.getElementById('swipeCount').innerText = 'Total Spent on Swipes: $' + swipeCount;
+      document.getElementById('swipeCount').innerText = 'Total Spent on Numbergoingup: $' + swipeCount;
     }
 
     // Define job parameters
@@ -131,7 +131,7 @@
       if (gems >= cost) {
         speed += percentageIncrease / 100; // Increase speed by a fixed amount
         gems -= cost;
-        swipeCount += cost; // Add the cost to the total spent on swipes
+        swipeCount += cost; // Add the cost to the total spent on Numbergoingup
         updateUI();
         saveState();
       } else {
