@@ -41,14 +41,20 @@
     <p>you like when number go up:</p>
     <p id="number">0</p>
 
-    <button id="speedButton" onclick="increaseSpeed()">swipe credit card! (Costs $5)</button>
+    <button id="speedButton">swipe credit card! (Costs $5)</button>
 
     <div id="money">
       <p>Money: <span id="moneyValue">0</span></p>
     </div>
 
-    <button class="jobButton" onclick="changeJob('low')">Low Income Job<br/>(1 money per second and 2x and multi to number go up)</button>
-    <button class="jobButton" onclick="changeJob('high')">High Income Job<br/>(2 money per second and 1x multi to number go up)</button>
+    <button class="jobButton" id="lowIncomeJob">Low Income Job<br/>(1 money per second and 2x and multi to number go up)</button>
+    <button class="jobButton" id="highIncomeJob">High Income Job<br/>(2 money per second and 1x multi to number go up)</button>
+  </div>
+
+  <button id="settingsButton">Settings</button>
+
+  <div id="settingsMenu" style="display: none;">
+    <button id="resetButton">Reset Progress</button>
   </div>
 
   <script>
@@ -56,24 +62,22 @@
     let lastNumber = localStorage.getItem('number');
     let lastMoney = localStorage.getItem('money');
     let lastSpeedUpgrades = localStorage.getItem('speedUpgrades');
-    let number = lastNumber ? parseInt(lastNumber) : 0;
+    let number = lastNumber ? parseFloat(lastNumber) : 10.00; // Default number with decimal points
     let speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
     let money = lastMoney ? parseInt(lastMoney) : 0;
+    let lastFrameTime = Date.now();
+
+    function updateUI() {
+      document.getElementById('number').innerText = number.toLocaleString('en-US', { maximumFractionDigits: 0 });
+      document.getElementById('moneyValue').innerText = Math.floor(money).toLocaleString('en-US');
+    }
 
     // Define job parameters
     const jobs = {
-      low: { incomeRate: 1, multiplier: 1 },
-      high: { incomeRate: 2, multiplier: 2 }
+      low: { incomeRate: 1, multiplier: 2 },
+      high: { incomeRate: 2, multiplier: 1 }
     };
     let currentJob = 'low'; // Default job
-
-    const numberElement = document.getElementById('number');
-    const moneyElement = document.getElementById('moneyValue');
-
-    function updateUI() {
-      numberElement.innerText = number;
-      moneyElement.innerText = money;
-    }
 
     function saveState() {
       localStorage.setItem('number', number);
@@ -82,7 +86,7 @@
     }
 
     function incrementNumber() {
-      number += speed;
+      number = parseFloat(number) + speed * jobs[currentJob].multiplier;
       updateUI();
       saveState();
     }
@@ -94,22 +98,59 @@
         updateUI();
         saveState();
       } else {
-        alert("Not enough money to increase speed!");
+        // Show error message in the UI
       }
     }
 
-    function updateMoney() {
-      money += jobs[currentJob].incomeRate;
-      updateUI();
-      saveState();
-    }
+  function updateMoney() {
+    const now = Date.now();
+    const deltaTime = (now - lastFrameTime) / 1000; // Time elapsed since last frame in seconds
+    lastFrameTime = now;
+
+    money += jobs[currentJob].incomeRate * deltaTime;
+    updateUI();
+    saveState();
+}
 
     function changeJob(job) {
       currentJob = job;
     }
 
-    setInterval(incrementNumber, 1000);
-    setInterval(updateMoney, 1000);
+    document.getElementById('speedButton').addEventListener('click', increaseSpeed);
+    document.getElementById('lowIncomeJob').addEventListener('click', () => changeJob('low'));
+    document.getElementById('highIncomeJob').addEventListener('click', () => changeJob('high'));
+
+    function gameLoop() {
+      const now = Date.now();
+      const deltaTime = (now - lastFrameTime) / 1000; // Time elapsed since last frame in seconds
+      lastFrameTime = now;
+
+      number += speed * jobs[currentJob].multiplier * deltaTime;
+      money += jobs[currentJob].incomeRate * deltaTime;
+
+      updateUI();
+      saveState();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    document.getElementById('settingsButton').addEventListener('click', function() {
+      const settingsMenu = document.getElementById('settingsMenu');
+      settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('resetButton').addEventListener('click', function() {
+      localStorage.clear();
+      // Reset variables to their initial values
+      number = 10.00;
+      speed = 1;
+      money = 0;
+      currentJob = 'low';
+      updateUI();
+    });
+
+    updateUI();
+    gameLoop();
   </script>
 </body>
 </html>
