@@ -92,7 +92,7 @@
     let lastSpeedUpgrades = localStorage.getItem('speedUpgrades');
     let lastGems = localStorage.getItem('gems');
     let number = lastNumber ? parseFloat(lastNumber) : 10.00; // Default number with decimal points
-    let speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
+    let speed = lastSpeedUpgrades ? parseFloat(lastSpeedUpgrades) : 1; // Default speed
     let money = lastMoney ? parseInt(lastMoney) : 0;
     let gems = lastGems ? parseInt(lastGems) : 0;
     let lastFrameTime = Date.now();
