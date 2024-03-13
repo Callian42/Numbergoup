@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Number Incrementer Game</title>
+  <title>NumberGoUp Game</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -22,29 +22,25 @@
       font-size: 24px;
     }
 
-    #speedMenu {
+    #speedButton {
       margin-top: 20px;
     }
 
-    #currency {
+    #money {
       margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <div id="container">
-    <h1>Number Incrementer Game</h1>
-    <p>The number increases automatically every second:</p>
+    <h1>Number do go up!</h1>
+    <p>you like when number go up:</p>
     <p id="number">0</p>
 
-    <div id="speedMenu">
-      <label for="speedInput">Increase Speed:</label>
-      <input type="number" id="speedInput" value="1">
-      <button onclick="increaseSpeed()">Increase Speed (Costs 10 currency)</button>
-    </div>
+    <button id="speedButton" onclick="increaseSpeed()">Increase Speed (Costs $5)</button>
 
-    <div id="currency">
-      <p>Currency: <span id="currencyValue">0</span></p>
+    <div id="money">
+      <p>Money: <span id="moneyValue">0</span></p>
     </div>
   </div>
 
@@ -52,8 +48,7 @@
     var lastNumber = localStorage.getItem('number');
     var number = lastNumber ? parseInt(lastNumber) : 0;
     var speed = 1; // Default speed
-
-    var currency = 0;
+    var money = 0;
 
     function incrementNumber() {
       number += speed;
@@ -62,27 +57,23 @@
     }
 
     function increaseSpeed() {
-      var cost = 10;
-      if (currency >= cost) {
-        var newSpeed = parseInt(document.getElementById('speedInput').value);
-        if (!isNaN(newSpeed) && newSpeed > 0) {
-          speed = newSpeed;
-          currency -= cost;
-          document.getElementById('currencyValue').innerText = currency;
-        }
+      if (money >= 5) {
+        speed++;
+        money -= 5;
+        document.getElementById('moneyValue').innerText = money;
       } else {
-        alert("Not enough currency!");
+        alert("Not enough money to increase speed!");
       }
     }
 
-    function updateCurrency() {
-      currency += 2;
-      document.getElementById('currencyValue').innerText = currency;
+    function updateMoney() {
+      money += 2;
+      document.getElementById('moneyValue').innerText = money;
     }
 
     incrementNumber();
     setInterval(incrementNumber, 1000);
-    setInterval(updateCurrency, 1000);
+    setInterval(updateMoney, 1000);
   </script>
 </body>
 </html>
