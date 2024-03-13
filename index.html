@@ -5,41 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NumberGoUp Game</title>
   <style>
+    @import url('https://fonts.googleapis.com/css?family=Orbitron:700|Orbitron:400');
+
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
+      font-family: 'Orbitron';
+      font-weight: 400;
+    }
+
+    h1, h2, h3, h4, h5 {
+      font-family: 'Orbitron';
+      font-weight: 700;
+    }
+
+    html {font-size: 100%;} /* 16px */
+
+    h1 {font-size: 4.210rem; /* 67.36px */}
+
+    h2 {font-size: 3.158rem; /* 50.56px */}
+
+    h3 {font-size: 2.369rem; /* 37.92px */}
+
+    h4 {font-size: 1.777rem; /* 28.48px */}
+
+    h5 {font-size: 1.333rem; /* 21.28px */}
+
+    small {font-size: 0.750rem; /* 12px */}
+
+    #container, #settingsMenu {
+      color: var(--background);
+    }
+
+
+    :root {
+      --text: #eff3ed;
+      --background: #0d120b;
+      --primary: #b2c6a5;
+      --secondary: #436a67;
+      --accent: #759ba8;
+    }
+
+    body {
+      font-family: 'Orbitron';
+      font-weight: 400;
+      background-color: var(--background);
+      color: var(--text);
     }
 
     #container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      margin-top: 50px;
+      width: 80%;
+      margin: 50px auto;
+      background-color: var(--primary);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     }
 
-    #number {
+    #number, #moneyValue, #gemValue, #swipeCount {
       font-size: 24px;
+      font-weight: bold;
     }
 
-    #speedButton {
+    button {
       margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      color: var(--text);
+      background-color: var(--secondary);
+      border-radius: 5px;
+      cursor: pointer;
     }
 
-    #money {
-      margin-top: 20px;
+    button:hover {
+      background-color: var(--accent);
     }
 
-    .jobButton {
-      margin-top: 10px;
+    #settingsButton {
+      position: absolute;
+      top: 20px;
+      right: 20px;
     }
 
-    .gemButton {
-      margin-top: 10px;
-    }
-
-    .speedUpButton {
-      margin-top: 10px;
+    #settingsMenu {
+      position: absolute;
+      top: 60px;
+      right: 20px;
+      background-color: var(--primary);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
     }
   </style>
 </head>
