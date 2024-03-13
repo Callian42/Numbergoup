@@ -40,7 +40,7 @@
     <div id="speedMenu">
       <label for="speedInput">Increase Speed:</label>
       <input type="number" id="speedInput" value="1">
-      <button onclick="applySpeed()">Apply</button>
+      <button onclick="increaseSpeed()">Increase Speed (Costs 10 currency)</button>
     </div>
 
     <div id="currency">
@@ -61,10 +61,17 @@
       localStorage.setItem('number', number);
     }
 
-    function applySpeed() {
-      var newSpeed = parseInt(document.getElementById('speedInput').value);
-      if (!isNaN(newSpeed) && newSpeed > 0) {
-        speed = newSpeed;
+    function increaseSpeed() {
+      var cost = 10;
+      if (currency >= cost) {
+        var newSpeed = parseInt(document.getElementById('speedInput').value);
+        if (!isNaN(newSpeed) && newSpeed > 0) {
+          speed = newSpeed;
+          currency -= cost;
+          document.getElementById('currencyValue').innerText = currency;
+        }
+      } else {
+        alert("Not enough currency!");
       }
     }
 
