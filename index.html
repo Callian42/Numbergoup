@@ -42,6 +42,9 @@
     <div id="money">
       <p>Money: <span id="moneyValue">0</span></p>
     </div>
+
+    <button onclick="changeJob('low')">Low Income Job</button>
+    <button onclick="changeJob('high')">High Income Job</button>
   </div>
 
   <script>
@@ -52,27 +55,34 @@
     let number = lastNumber ? parseInt(lastNumber) : 0;
     let speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
     let money = lastMoney ? parseInt(lastMoney) : 0;
-  
+
+    // Define job parameters
+    const jobs = {
+      low: { incomeRate: 1, multiplier: 1 },
+      high: { incomeRate: 2, multiplier: 2 }
+    };
+    let currentJob = 'low'; // Default job
+
     const numberElement = document.getElementById('number');
     const moneyElement = document.getElementById('moneyValue');
-  
+
     function updateUI() {
       numberElement.innerText = number;
       moneyElement.innerText = money;
     }
-  
+
     function saveState() {
       localStorage.setItem('number', number);
       localStorage.setItem('money', money);
       localStorage.setItem('speedUpgrades', speed);
     }
-  
+
     function incrementNumber() {
       number += speed;
       updateUI();
       saveState();
     }
-  
+
     function increaseSpeed() {
       if (money >= 5) {
         speed++;
@@ -80,15 +90,22 @@
         updateUI();
         saveState();
       } else {
-        // Show error message in the UI
+        alert("Not enough money to increase speed!");
       }
     }
-  
+
     function updateMoney() {
-      money += 2;
+      money += jobs[currentJob].incomeRate;
       updateUI();
       saveState();
     }
+
+    function changeJob(job) {
+      currentJob = job;
+    }
+
+    setInterval(incrementNumber, 1000);
+    setInterval(updateMoney, 1000);
   </script>
 </body>
 </html>
