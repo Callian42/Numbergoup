@@ -46,40 +46,49 @@
 
   <script>
     // Retrieve last saved values from localStorage
-    var lastNumber = localStorage.getItem('number');
-    var lastMoney = localStorage.getItem('money');
-    var lastSpeedUpgrades = localStorage.getItem('speedUpgrades');
-    var number = lastNumber ? parseInt(lastNumber) : 0;
-    var speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
-    var money = lastMoney ? parseInt(lastMoney) : 0;
-
+    let lastNumber = localStorage.getItem('number');
+    let lastMoney = localStorage.getItem('money');
+    let lastSpeedUpgrades = localStorage.getItem('speedUpgrades');
+    let number = lastNumber ? parseInt(lastNumber) : 0;
+    let speed = lastSpeedUpgrades ? parseInt(lastSpeedUpgrades) : 1; // Default speed
+    let money = lastMoney ? parseInt(lastMoney) : 0;
+  
+    const numberElement = document.getElementById('number');
+    const moneyElement = document.getElementById('moneyValue');
+  
+    function updateUI() {
+      numberElement.innerText = number;
+      moneyElement.innerText = money;
+    }
+  
+    function saveState() {
+      localStorage.setItem('number', number);
+      localStorage.setItem('money', money);
+      localStorage.setItem('speedUpgrades', speed);
+    }
+  
     function incrementNumber() {
       number += speed;
-      document.getElementById('number').innerText = number;
-      localStorage.setItem('number', number);
+      updateUI();
+      saveState();
     }
-
+  
     function increaseSpeed() {
       if (money >= 5) {
         speed++;
         money -= 5;
-        document.getElementById('moneyValue').innerText = money;
-        localStorage.setItem('money', money);
-        localStorage.setItem('speedUpgrades', speed);
+        updateUI();
+        saveState();
       } else {
-        alert("Not enough money to increase speed!");
+        // Show error message in the UI
       }
     }
-
+  
     function updateMoney() {
       money += 2;
-      document.getElementById('moneyValue').innerText = money;
-      localStorage.setItem('money', money);
+      updateUI();
+      saveState();
     }
-
-    incrementNumber();
-    setInterval(incrementNumber, 1000);
-    setInterval(updateMoney, 1000);
   </script>
 </body>
 </html>
