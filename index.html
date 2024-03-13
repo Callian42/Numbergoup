@@ -127,17 +127,17 @@
       saveState();
     }
 
-  function speedUp(percentageIncrease, cost) {
-    if (gems >= cost) {
-      speed += speed * (percentageIncrease / 100); // Increase speed by a percentage of the current speed
-      gems -= cost;
-      swipeCount += cost; // Add the cost to the total spent on swipes
-      updateUI();
-      saveState();
-    } else {
-      // Show error message in the UI
+    function speedUp(percentageIncrease, cost) {
+      if (gems >= cost) {
+        speed += percentageIncrease / 100; // Increase speed by a fixed amount
+        gems -= cost;
+        swipeCount += cost; // Add the cost to the total spent on swipes
+        updateUI();
+        saveState();
+      } else {
+        // Show error message in the UI
+      }
     }
-  }
 
   function buyGems(amount) {
     const cost = amount / 10; // Define the cost for each amount of gems. Adjust this as needed.
