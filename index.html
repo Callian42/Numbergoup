@@ -138,28 +138,36 @@
 
       var accelerateButton = document.getElementById('accelerate-button');
 
-      accelerateButton.addEventListener('mousedown', function() {
-        clearInterval(intervalId);
-        interval = 100;
-        intervalId = setInterval(updateTime, interval);
-        for (let i = 1; i <= 10; i++) {
-          accelerationTimeouts.push(setTimeout(function() {
+function handleButtonDown() {
+    clearInterval(intervalId);
+    interval = 100;
+    intervalId = setInterval(updateTime, interval);
+    for (let i = 1; i <= 10; i++) {
+        accelerationTimeouts.push(setTimeout(function() {
             clearInterval(intervalId);
             interval -= 35;
             intervalId = setInterval(updateTime, interval);
-          }, i * 550));
-        }
-      });
+        }, i * 550));
+    }
+}
 
-      accelerateButton.addEventListener('mouseup', function() {
-        accelerationTimeouts.forEach(function(timeout) {
-          clearTimeout(timeout);
-        });
-        accelerationTimeouts = [];
-        clearInterval(intervalId);
-        interval = 1000;
-        intervalId = setInterval(updateTime, interval);
-      });
+function handleButtonUp() {
+    accelerationTimeouts.forEach(function(timeout) {
+        clearTimeout(timeout);
+    });
+    accelerationTimeouts = [];
+    clearInterval(intervalId);
+    interval = 1000;
+    intervalId = setInterval(updateTime, interval);
+}
+
+// For mouse users
+accelerateButton.addEventListener('mousedown', handleButtonDown);
+accelerateButton.addEventListener('mouseup', handleButtonUp);
+
+// For touch screen users
+accelerateButton.addEventListener('touchstart', handleButtonDown);
+accelerateButton.addEventListener('touchend', handleButtonUp);
     </script>
   </body>
 </html>
