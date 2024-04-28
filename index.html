@@ -1,282 +1,165 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NumberGoUp Game</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css?family=Orbitron:700|Orbitron:400');
-    
-    body {
-      font-family: 'Orbitron';
-      font-weight: 400;
-    }
-
-    h1, h2, h3, h4, h5 {
-      font-family: 'Orbitron';
-      font-weight: 700;
-    }
-
-    html {font-size: 100%;} /* 16px */
-
-    h1 {font-size: 4.210rem; /* 67.36px */}
-
-    h2 {font-size: 3.158rem; /* 50.56px */}
-
-    h3 {font-size: 2.369rem; /* 37.92px */}
-
-    h4 {font-size: 1.777rem; /* 28.48px */}
-
-    h5 {font-size: 1.333rem; /* 21.28px */}
-
-    small {font-size: 0.750rem; /* 12px */}
-
-    #container, #settingsMenu {
-      color: var(--background);
-    }
-
-
-    :root {
-      --text: #eff3ed;
-      --background: #0d120b;
-      --primary: #b2c6a5;
-      --secondary: #436a67;
-      --accent: #759ba8;
-    }
-
-    body {
-      font-family: 'Orbitron';
-      font-weight: 400;
-      background-color: var(--background);
-      color: var(--text);
-    }
-
-    #container {
-      width: 80%;
-      margin: 50px auto;
-      background-color: var(--primary);
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    }
-
-    #number, #moneyValue, #gemValue, #swipeCount {
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      color: var(--text);
-      background-color: var(--secondary);
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: var(--accent);
-    }
-
-    #settingsButton {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-
-    #settingsMenu {
-      position: absolute;
-      top: 60px;
-      right: 20px;
-      background-color: var(--primary);
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-    }
-  </style>
-</head>
-<body>
-  <div id="container">
-    <h1>Number do go up!</h1>
-    <p>we like when number go up:</p>
-    <p id="number">0</p>
-
-    <div id="money">
-      <p>Money: <span id="moneyValue">0</span></p>
-    </div>
-
-    <div id="gems">
-      <p id="gemCount">Gems: <span id="gemValue">0</span></p>
-    </div>
-
-    <div id="swipe">
-      <p id="swipeCount">Total Spent on Numbergoingup: $0</p>
-    </div>
-
-    <button class="gemButton" id="buy50Gems">50 Gems<br/>(Costs $4.99)</button>
-    <button class="gemButton" id="buy120Gems">120 Gems<br/>(Costs $9.99)</button>
-    <button class="gemButton" id="buy250Gems">250 Gems<br/>(Costs $19.99)</button>
-    <button class="gemButton" id="buy650Gems">650 Gems<br/>(Costs $49.99)</button>
-    <button class="gemButton" id="buy1400Gems">1400 Gems<br/>(Costs $99.99)</button>
-    <button class="gemButton" id="buy3000Gems">3000 Gems<br/>(Costs $199.99)</button>
-
-    <button class="speedUpButton" id="speedUp1">Speed Up by 20%<br/>(Costs 50 Gems)</button>
-    <button class="speedUpButton" id="speedUp2">Speed Up by 50%<br/>(Costs 120 Gems)</button>
-    <button class="speedUpButton" id="speedUp3">Speed Up by 100%<br/>(Costs 250 Gems)</button>
-    <button class="speedUpButton" id="speedUp4">Speed Up by 300%<br/>(Costs 650 Gems)</button>
-    <button class="speedUpButton" id="speedUp5">Increase Speed by 500%<br/>(Costs 1400 Gems)</button>
-    <button class="speedUpButton" id="speedUp6">Increase Speed by 1000%<br/>(Costs 3000 Gems)</button>    
-
-    <button class="jobButton" id="lowIncomeJob">Low Income Job<br/>(1 money per second and 2x and multi to number go up)</button>
-    <button class="jobButton" id="highIncomeJob">High Income Job<br/>(2 money per second and 1x multi to number go up)</button>
-  </div>
-
-  <button id="settingsButton">Settings</button>
-
-  <div id="settingsMenu" style="display: none;">
-    <button id="resetButton">Reset Progress</button>
-  </div>
-
-  <script>
-    // Retrieve last saved values from localStorage
-    let lastNumber = localStorage.getItem('number');
-    let lastMoney = localStorage.getItem('money');
-    let lastSpeedUpgrades = localStorage.getItem('speedUpgrades');
-    let lastGems = localStorage.getItem('gems');
-    let number = lastNumber ? parseFloat(lastNumber) : 10.00; // Default number with decimal points
-    let speed = lastSpeedUpgrades ? parseFloat(lastSpeedUpgrades) : 1; // Default speed
-    let money = lastMoney ? parseInt(lastMoney) : 0;
-    let gems = lastGems ? parseInt(lastGems) : 0;
-    let lastFrameTime = Date.now();
-    let lastSwipeCount = localStorage.getItem('swipeCount');
-    let swipeCount = lastSwipeCount ? parseInt(lastSwipeCount) : (speed - 1) * 5;
-
-    function updateUI() {
-      document.getElementById('number').innerText = number.toLocaleString('en-US', { maximumFractionDigits: 0 });
-      document.getElementById('moneyValue').innerText = Math.floor(money).toLocaleString('en-US');
-      document.getElementById('gemValue').innerText = gems.toLocaleString('en-US'); // Add this line
-      document.getElementById('swipeCount').innerText = 'Total Spent on Numbergoingup: $' + swipeCount;
-    }
-
-    // Define job parameters
-    const jobs = {
-      low: { incomeRate: 1, multiplier: 2 },
-      high: { incomeRate: 2, multiplier: 1 }
-    };
-    let currentJob = 'low'; // Default job
-
-    function saveState() {
-      localStorage.setItem('number', number);
-      localStorage.setItem('money', money);
-      localStorage.setItem('speedUpgrades', speed);
-      localStorage.setItem('swipeCount', swipeCount);
-      localStorage.setItem('gems', gems);
-    }
-
-    function incrementNumber() {
-      number = parseFloat(number) + speed * jobs[currentJob].multiplier;
-      updateUI();
-      saveState();
-    }
-
-    function speedUp(percentageIncrease, cost) {
-      if (gems >= cost) {
-        speed += percentageIncrease / 100; // Increase speed by a fixed amount
-        gems -= cost;
-        updateUI();
-        saveState();
-      } else {
-        // Show error message in the UI
+<html>
+  <head>
+    <title>NumberGoingUp</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron">
+    <style>
+      * {
+        box-sizing: border-box;
       }
-    }
 
-    const gemCosts = {
-      50: 4.99,
-      120: 9.99,
-      250: 19.99,
-      650: 49.99,
-      1400: 99.99,
-      3000: 199.99
-    };
-
-    function buyGems(amount) {
-      const cost = gemCosts[amount]; // Get the cost from the mapping
-
-      if (money >= cost) {
-        money -= cost;
-        gems += amount;
-        swipeCount += cost; // Add the cost to the total spent on Numbergoingup
-        updateUI();
-        saveState();
-      } else {
-        // Show error message in the UI
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 15px 0;
+        background-color: #FFB546;
       }
-    }
 
-    function updateMoney() {
-      const now = Date.now();
-      const deltaTime = (now - lastFrameTime) / 1000; // Time elapsed since last frame in seconds
-      lastFrameTime = now;
+      .wrapper {
+        height: 60%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+      }
 
-      money += jobs[currentJob].incomeRate * deltaTime;
-      updateUI();
-      saveState();
-    }
+      .clock-div {
+        height: 140px;
+        width: 290px;
+        border-radius: 28px;
+        background-color: #282828;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #FFB546;
+        font-size: 60px;
+        font-family: 'Orbitron', sans-serif;
+      }
 
-    function changeJob(job) {
-      currentJob = job;
-    }
+      .thin-div {
+        height: 5px;
+        background-color: #282828;
+        width: 290px;
+        margin-top: 2.5px;
+        border-radius: 20px;
+      }
 
-    document.getElementById('buy50Gems').addEventListener('click', () => buyGems(50));
-    document.getElementById('buy120Gems').addEventListener('click', () => buyGems(120));
-    document.getElementById('buy250Gems').addEventListener('click', () => buyGems(250));
-    document.getElementById('buy650Gems').addEventListener('click', () => buyGems(650));
-    document.getElementById('buy1400Gems').addEventListener('click', () => buyGems(1400));
-    document.getElementById('buy3000Gems').addEventListener('click', () => buyGems(3000));
-    document.getElementById('speedUp1').addEventListener('click', () => speedUp(20, 50));
-    document.getElementById('speedUp2').addEventListener('click', () => speedUp(50, 120));
-    document.getElementById('speedUp3').addEventListener('click', () => speedUp(100, 250));
-    document.getElementById('speedUp4').addEventListener('click', () => speedUp(300, 650));
-    document.getElementById('speedUp5').addEventListener('click', () => speedUp(500, 1400));
-    document.getElementById('speedUp6').addEventListener('click', () => speedUp(1000, 3000));
-    document.getElementById('lowIncomeJob').addEventListener('click', () => changeJob('low'));
-    document.getElementById('highIncomeJob').addEventListener('click', () => changeJob('high'));
+      .motivation-div {
+        padding: 20px 12px;
+        height: 100px;
+        box-sizing: border-box;
+      }
 
-    function gameLoop() {
-      const now = Date.now();
-      const deltaTime = (now - lastFrameTime) / 1000; // Time elapsed since last frame in seconds
-      lastFrameTime = now;
+      .motivation-button {
+        height: 100%;
+        width: 120px;
+        border-radius: 2px;
+        display: block;
+        background-color: #282828;
+        color: #FFB546;
+        border: none;
+        cursor: pointer;
+        font-family: 'Nunito Sans', sans-serif;
+      }
 
-      number += speed * jobs[currentJob].multiplier * deltaTime;
-      money += jobs[currentJob].incomeRate * deltaTime;
+      .accelerate-div {
+        height: 60px;
+      }
 
-      updateUI();
-      saveState();
+      .accelerate-button {
+        width: 100%;
+        height: 100%;
+        font-size: 30px;
+        font-weight: 300;
+        font-style: italic;
+        display: block;
+        background-color: #282828;
+        color: #FFB546;
+        border: none;
+        cursor: pointer;
+        font-family: 'Nunito Sans', sans-serif;
+      }
 
-      requestAnimationFrame(gameLoop);
-    }
+      .button:hover {
+        background-color: #4e4e4e;
+      }
 
-    document.getElementById('settingsButton').addEventListener('click', function() {
-      const settingsMenu = document.getElementById('settingsMenu');
-      settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'block' : 'none';
-    });
+      @media screen and (max-width: 600px) {
+        .accelerate-div {
+          font-size: 60px;
+        }
 
-    document.getElementById('resetButton').addEventListener('click', function() {
-      localStorage.clear();
-      // Reset variables to their initial values
-      number = 10.00;
-      speed = 1;
-      money = 0;
-      currentJob = 'low';
-      swipeCount = 0;
-      gems = 0;
-      updateUI();
-    });
+        .motivation-div {
+          padding: 20px 12px;
+          height: 100px;
+          box-sizing: border-box;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="clock-div" id="clock"></div>
+      <div class="thin-div"></div>
+      <div class="table-div"></div>
+    </div>
+    <div class="motivation-div">
+      <button class="button motivation-button">When in doubt count it out</button>
+    </div>  
+    <div class="accelerate-div">
+      <button class="button accelerate-button" id="accelerate-button">Accelerate</button>
+    </div>
+    <script>
+      var hours = Math.floor(Math.random() * 24);
+      var minutes = Math.floor(Math.random() * 60);
+      var interval = 1000;
+      var intervalId;
+      var accelerationTimeouts = [];
 
-    updateUI();
-    gameLoop();
-  </script>
-</body>
+      function updateTime() {
+        minutes++;
+        if (minutes >= 60) {
+          minutes = 0;
+          hours++;
+          if (hours >= 24) {
+            hours = 0;
+          }
+        }
+        hoursString = hours < 10 ? '0' + hours : hours;
+        minutesString = minutes < 10 ? '0' + minutes : minutes;
+        document.getElementById('clock').textContent = hoursString + ':' + minutesString;
+      }
+
+      updateTime();
+      intervalId = setInterval(updateTime, interval);
+
+      var accelerateButton = document.getElementById('accelerate-button');
+
+      accelerateButton.addEventListener('mousedown', function() {
+        clearInterval(intervalId);
+        interval = 100;
+        intervalId = setInterval(updateTime, interval);
+        for (let i = 1; i <= 10; i++) {
+          accelerationTimeouts.push(setTimeout(function() {
+            clearInterval(intervalId);
+            interval -= 35;
+            intervalId = setInterval(updateTime, interval);
+          }, i * 550));
+        }
+      });
+
+      accelerateButton.addEventListener('mouseup', function() {
+        accelerationTimeouts.forEach(function(timeout) {
+          clearTimeout(timeout);
+        });
+        accelerationTimeouts = [];
+        clearInterval(intervalId);
+        interval = 1000;
+        intervalId = setInterval(updateTime, interval);
+      });
+    </script>
+  </body>
 </html>
